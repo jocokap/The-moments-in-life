@@ -9,8 +9,8 @@
 
 <channel>
 	<title>Enphysion Health</title>
-	<atom:link href="https://phenomenal-baklava-b4f23d.netlify.app/feed/" rel="self" type="application/rss+xml" />
-	<link>https://phenomenal-baklava-b4f23d.netlify.app</link>
+	<atom:link href="https://enphysionhealth.com/feed/" rel="self" type="application/rss+xml" />
+	<link>https://enphysionhealth.com</link>
 	<description></description>
 	<lastBuildDate></lastBuildDate>
 	<language>en-US</language>
@@ -21,9 +21,9 @@
 	<generator>https://wordpress.org/?v=6.7.1</generator>
 
 <image>
-	<url>https://phenomenal-baklava-b4f23d.netlify.app/wp-content/uploads/2024/07/Untitled-design-87-150x150.png</url>
+	<url>https://enphysionhealth.com/wp-content/uploads/2024/07/Untitled-design-87-150x150.png</url>
 	<title>Enphysion Health</title>
-	<link>https://phenomenal-baklava-b4f23d.netlify.app</link>
+	<link>https://enphysionhealth.com</link>
 	<width>32</width>
 	<height>32</height>
 </image> 
