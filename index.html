@@ -2696,7 +2696,7 @@
         <main class="wp-block-group is-layout-flow wp-container-core-group-is-layout-19 wp-block-group-is-layout-flow"
             style="margin-top:0">
             <div class="wp-block-group alignfull back-main has-global-padding is-layout-constrained wp-container-core-group-is-layout-3 wp-block-group-is-layout-constrained has-background"
-     style="padding-top:var(--wp--preset--spacing--40);
+                style="padding-top:var(--wp--preset--spacing--40);
             padding-right:var(--wp--preset--spacing--10);
             padding-bottom:var(--wp--preset--spacing--50);
             padding-left:var(--wp--preset--spacing--10);
@@ -2704,27 +2704,23 @@
             background-size:cover;
             background-position:center;
             background-repeat:no-repeat;">
-                <!-- Popup Container -->
-                <div id="popupOverlay" class="popup-overlay">
-                    <div class="popup-content">
-                        <button class="close-button" onclick="closePopup()">×</button>
-                        <!-- ConvertKit Form -->
-                        <div id="convertKitContainer"></div>
+                <div id="convertkit-popup" class="convertkit-popup-overlay">
+                    <div class="convertkit-popup-content">
+                        <button class="convertkit-close-button" onclick="closeConvertKitPopup()">×</button>
+                        <div id="convertkitContainer"></div>
                     </div>
                 </div>
 
                 <script>
-                    // Function to check if popup should be shown
-                    function shouldShowPopup() {
+                    function shouldShowConvertKitPopup() {
                         const dismissData = JSON.parse(localStorage.getItem('convertkit_dismiss') || '{"count": 0, "lastDismiss": null}');
-                        const oneWeek = 7 * 24 * 60 * 60 * 1000; // one week in milliseconds
+                        const oneWeek = 7 * 24 * 60 * 60 * 1000;
 
                         if (dismissData.count >= 3 && dismissData.lastDismiss) {
                             const timeSinceLastDismiss = Date.now() - dismissData.lastDismiss;
                             if (timeSinceLastDismiss < oneWeek) {
                                 return false;
                             } else {
-                                // Reset counter after a week
                                 localStorage.setItem('convertkit_dismiss', JSON.stringify({ count: 0, lastDismiss: null }));
                                 return true;
                             }
@@ -2732,47 +2728,46 @@
                         return true;
                     }
 
-                    // Function to show popup
-                    function showPopup() {
-                        if (shouldShowPopup()) {
-                            const overlay = document.getElementById('popupOverlay');
-                            overlay.style.display = 'flex';
+                    function showConvertKitPopup() {
+                        if (shouldShowConvertKitPopup()) {
+                            const popup = document.getElementById('convertkit-popup');
+                            popup.style.display = 'flex';
 
-                            // Load ConvertKit form if not already loaded
                             if (!document.querySelector('[data-uid="ee57913583"]')) {
                                 const script = document.createElement('script');
                                 script.src = 'https://enphysion-health.kit.com/ee57913583/index.js';
                                 script.async = true;
                                 script.setAttribute('data-uid', 'ee57913583');
-                                document.getElementById('convertKitContainer').appendChild(script);
+                                document.getElementById('convertkitContainer').appendChild(script);
                             }
                         }
                     }
 
-                    // Function to close popup
-                    function closePopup() {
-                        const overlay = document.getElementById('popupOverlay');
-                        overlay.style.display = 'none';
+                    function closeConvertKitPopup() {
+                        var popup = document.getElementById("convertkit-popup");
+                        popup.classList.add("convertkit-scale-down");
+                        setTimeout(() => {
+                            popup.style.display = "none";
+                            popup.classList.remove("convertkit-scale-down");
+                        }, 300);
 
-                        // Update localStorage
                         const dismissData = JSON.parse(localStorage.getItem('convertkit_dismiss') || '{"count": 0, "lastDismiss": null}');
                         dismissData.count += 1;
                         dismissData.lastDismiss = Date.now();
                         localStorage.setItem('convertkit_dismiss', JSON.stringify(dismissData));
                     }
 
-                    // Show popup after 2 seconds
-                    setTimeout(showPopup, 5000);
+                    setTimeout(showConvertKitPopup, 5000);
 
-                    // Close popup when clicking outside
-                    document.getElementById('popupOverlay').addEventListener('click', function (event) {
+                    document.getElementById('convertkit-popup').addEventListener('click', function (event) {
                         if (event.target === this) {
-                            closePopup();
+                            closeConvertKitPopup();
                         }
                     });
                 </script>
+
                 <style>
-                    .popup-overlay {
+                    .convertkit-popup-overlay {
                         display: none;
                         position: fixed;
                         top: 0;
@@ -2786,9 +2781,11 @@
                         justify-content: center;
                         padding: 20px;
                         box-sizing: border-box;
+                        background-color: rgba(0, 0, 0, 0.5);
+                        transition: all 0.3s ease-in-out;
                     }
 
-                    .popup-content {
+                    .convertkit-popup-content {
                         position: relative;
                         background: white;
                         padding: 20px;
@@ -2797,25 +2794,53 @@
                         max-width: 800px;
                         margin: 20px auto;
                         max-height: 90vh;
-                        overflow: hidden;
+                        overflow-y: auto;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                        scrollbar-width: thin;
+                        scrollbar-color: #eee transparent;
+                        -webkit-overflow-scrolling: touch;
+                    }
+
+                    .convertkit-scale-down {
+                        transform: scale(0.95);
+                        opacity: 0;
+                        transition: all 0.3s ease-in-out;
+                    }
+
+                    .convertkit-popup-content::-webkit-scrollbar {
+                        width: 6px;
+                    }
+
+                    .convertkit-popup-content::-webkit-scrollbar-track {
+                        background: transparent;
+                        border-radius: 3px;
+                    }
+
+                    .convertkit-popup-content::-webkit-scrollbar-thumb {
+                        background-color: #eee;
+                        border-radius: 3px;
+                    }
+
+                    .convertkit-popup-content::-webkit-scrollbar-thumb:hover {
+                        background-color: #ddd;
+                    }
+
+                    #convertkitContainer {
+                        width: 100%;
                         display: flex;
                         flex-direction: column;
                         align-items: center;
                     }
 
-                    #convertKitContainer {
-                        width: 100%;
-                        height: 100%;
-                        overflow: hidden;
-                    }
-
-                    #convertKitContainer form {
+                    #convertkitContainer form {
                         margin: 0 !important;
                         padding: 0 !important;
                         width: 100% !important;
                     }
 
-                    /* Override any ConvertKit form styles */
                     [data-uid="ee57913583"] {
                         width: 100% !important;
                         max-width: 100% !important;
@@ -2823,7 +2848,7 @@
                         padding: 0 !important;
                     }
 
-                    .close-button {
+                    .convertkit-close-button {
                         position: absolute;
                         top: 10px;
                         right: 10px;
@@ -2833,10 +2858,56 @@
                         cursor: pointer;
                         padding: 5px;
                         line-height: 1;
+                        z-index: 1;
+                        width: 40px;
+                        height: 40px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 50%;
+                        background-color: rgba(255, 255, 255, 0.8);
                     }
 
-                    .close-button:hover {
+                    .convertkit-close-button:hover {
                         color: #666;
+                        background-color: rgba(255, 255, 255, 1);
+                    }
+
+                    @media screen and (max-width: 768px) {
+                        .convertkit-popup-overlay {
+                            padding: 10px;
+                        }
+
+                        .convertkit-popup-content {
+                            margin: 10px;
+                            padding: 15px;
+                            max-height: 85vh;
+                        }
+
+                        .convertkit-close-button {
+                            top: 5px;
+                            right: 5px;
+                            width: 44px;
+                            height: 44px;
+                        }
+                    }
+
+                    @media screen and (max-width: 480px) {
+                        .convertkit-popup-overlay {
+                            padding: 5px;
+                        }
+
+                        .convertkit-popup-content {
+                            margin: 5px;
+                            padding: 10px;
+                            max-height: 85vh;
+                        }
+                    }
+
+                    @media screen and (max-height: 600px) {
+                        .convertkit-popup-content {
+                            max-height: 85vh;
+                        }
                     }
                 </style>
 
@@ -2902,7 +2973,8 @@
                     class="wp-block-group is-vertical is-content-justification-center is-layout-flex wp-container-core-group-is-layout-4 wp-block-group-is-layout-flex">
                     <h2
                         class="wp-block-heading has-text-align-center is-style-default agl agl-fadeCSS agl-in-distance-1">
-                        <strong>Your pain free, strong, and flexible body is waiting for you.</strong></h2>
+                        <strong>Your pain free, strong, and flexible body is waiting for you.</strong>
+                    </h2>
                 </div>
 
 
